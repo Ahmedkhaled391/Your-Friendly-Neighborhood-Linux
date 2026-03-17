@@ -20,8 +20,7 @@ The project is a user-friendly Linux assistant designed to attract new users to 
 - **GUI**: GTK
 - **Operating System**: Linux distributions (Ubuntu, with potential support for other popular distributions)
 
-## Description
-YFNL is a desktop app made in C to assist new users to Linux to do the basic commands like downloading packages, updating system, customizing their PC through a GUI instead of dealing with the terminal which will make things complicated for new Linux users.
+
 
 ## Installation
 1. Clone the repository:
