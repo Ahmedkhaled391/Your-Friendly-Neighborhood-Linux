@@ -15,10 +15,12 @@ SOURCES = \
     app/pages/page_perf.c \
     app/pages/page_custom.c \
     app/pages/page_tools.c \
+    app/pages/page_generator.c \
     app/pages/page_about.c \
     app/widgets/card.c \
     logic/actions.c \
-    logic/runner.c
+    logic/runner.c \
+    logic/passwordGenerator.c
 
 OBJECTS = $(SOURCES:.c=.o)
 

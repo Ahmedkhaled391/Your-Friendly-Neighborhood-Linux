@@ -6,7 +6,7 @@
 
 int main(int argc, char **argv)
 {
-    // Determine the executable directory
+   
     char exe_path[1024];
     char base_dir[1024];
     ssize_t len = readlink("/proc/self/exe", exe_path, sizeof(exe_path) - 1);
@@ -14,7 +14,7 @@ int main(int argc, char **argv)
     {
         exe_path[len] = '\0';
 
-        // Safely extract directory without modifying exe_path
+        
         const char *last_slash = strrchr(exe_path, '/');
         if (last_slash)
         {

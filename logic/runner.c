@@ -42,7 +42,7 @@ static void on_subprocess_done(GObject *src, GAsyncResult *res, gpointer user_da
                 ctx->parent_window,
                 GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                 GTK_MESSAGE_INFO, GTK_BUTTONS_CLOSE,
-                "Done!");
+                "Done");
             if (out && strlen(out) > 0)
                 gtk_message_dialog_format_secondary_text(
                     GTK_MESSAGE_DIALOG(dialog), "%s", out);
@@ -85,10 +85,16 @@ static void launch_script(ActionContext *ctx)
     GError *err = NULL;
     const char *argv[] = {"/bin/sh", "-c", cmd, NULL};
 
-    GSubprocess *proc = g_subprocess_newv(
-        argv,
-        G_SUBPROCESS_FLAGS_STDOUT_PIPE | G_SUBPROCESS_FLAGS_STDERR_PIPE,
-        &err);
+    // Pass D-Bus session to the subprocess so gsettings works
+    const gchar *dbus = g_getenv("DBUS_SESSION_BUS_ADDRESS");
+    GSubprocessLauncher *launcher = g_subprocess_launcher_new(
+        G_SUBPROCESS_FLAGS_STDOUT_PIPE | G_SUBPROCESS_FLAGS_STDERR_PIPE);
+
+    if (dbus)
+        g_subprocess_launcher_setenv(launcher, "DBUS_SESSION_BUS_ADDRESS", dbus, TRUE);
+
+    GSubprocess *proc = g_subprocess_launcher_spawnv(launcher, argv, &err);
+    g_object_unref(launcher);
 
     if (!proc)
     {
@@ -109,7 +115,6 @@ static void launch_script(ActionContext *ctx)
 
     g_subprocess_communicate_utf8_async(proc, NULL, NULL, on_subprocess_done, ctx);
 }
-
 
 
 void on_run_clicked(GtkButton *btn, gpointer user_data)

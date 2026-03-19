@@ -4,10 +4,9 @@
 #include "pages/page_perf.h"
 #include "pages/page_custom.h"
 #include "pages/page_tools.h"
+#include "pages/page_generator.h"
 #include "pages/page_about.h"
 
-// ─────────────────────────────────────────────────────────────────────────────// CSS
-// ─────────────────────────────────────────────────────────────────────────────
 
 static const char *APP_CSS =
     "window {"
@@ -154,18 +153,17 @@ static const char *APP_CSS =
     "    background-color: #1c1c1e;"
     "}";
 
-// ─────────────────────────────────────────────────────────────────────────────// Activate
-// ─────────────────────────────────────────────────────────────────────────────
+
 
 void on_activate(GtkApplication *app, gpointer user_data)
 {
-    // ── Window ────────────────────────────────────────────────────
+   
     GtkWidget *window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), "Your Friendly Neighborhood Linux");
     gtk_window_set_default_size(GTK_WINDOW(window), 860, 540);
     gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
-    // ── CSS ───────────────────────────────────────────────────────
+  
     GtkCssProvider *provider = gtk_css_provider_new();
     gtk_css_provider_load_from_string(provider, APP_CSS);
     gtk_style_context_add_provider_for_display(
@@ -174,7 +172,6 @@ void on_activate(GtkApplication *app, gpointer user_data)
         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     g_object_unref(provider);
 
-    // ── Header bar ────────────────────────────────────────────────
     GtkWidget *headerbar = gtk_header_bar_new();
     gtk_window_set_titlebar(GTK_WINDOW(window), headerbar);
 
@@ -191,11 +188,10 @@ void on_activate(GtkApplication *app, gpointer user_data)
     gtk_box_append(GTK_BOX(title_box), h_sub);
     gtk_header_bar_set_title_widget(GTK_HEADER_BAR(headerbar), title_box);
 
-    // ── Root horizontal box ───────────────────────────────────────
     GtkWidget *root = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_window_set_child(GTK_WINDOW(window), root);
 
-    // ── Stack (content area) ──────────────────────────────────────
+    
     GtkWidget *stack = gtk_stack_new();
     gtk_stack_set_transition_type(GTK_STACK(stack), GTK_STACK_TRANSITION_TYPE_CROSSFADE);
     gtk_stack_set_transition_duration(GTK_STACK(stack), 150);
@@ -203,19 +199,19 @@ void on_activate(GtkApplication *app, gpointer user_data)
     gtk_widget_set_vexpand(stack, TRUE);
     gtk_widget_add_css_class(stack, "content-area");
 
-    // ── Sidebar ───────────────────────────────────────────────────
     NavData *nd = g_new(NavData, 1);
     nd->stack = GTK_STACK(stack);
     nd->pages[0] = "setup";
     nd->pages[1] = "perf";
     nd->pages[2] = "custom";
     nd->pages[3] = "tools";
-    nd->pages[4] = "about";
+    nd->pages[4] = "generator";
+    nd->pages[5] = "about";
 
     GtkWidget *sidebar = create_sidebar(nd);
     gtk_box_append(GTK_BOX(root), sidebar);
 
-    // Separator between sidebar and content
+  
     GtkWidget *sep = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
     gtk_box_append(GTK_BOX(root), sep);
 
@@ -223,10 +219,11 @@ void on_activate(GtkApplication *app, gpointer user_data)
 
     GtkWindow *win = GTK_WINDOW(window);
 
-    // ── Pages ─────────────────────────────────────────────────────
+    
     gtk_stack_add_named(GTK_STACK(stack), create_page_setup(win), "setup");
     gtk_stack_add_named(GTK_STACK(stack), create_page_perf(win), "perf");
     gtk_stack_add_named(GTK_STACK(stack), create_page_custom(win), "custom");
+    gtk_stack_add_named(GTK_STACK(stack), create_page_generator(win), "generator");
     gtk_stack_add_named(GTK_STACK(stack), create_page_tools(win), "tools");
     gtk_stack_add_named(GTK_STACK(stack), create_page_about(), "about");
 

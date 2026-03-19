@@ -5,4 +5,4 @@
 
 GtkWidget *create_page_perf(GtkWindow *parent);
 
-#endif // PAGE_PERF_H
+#endif 

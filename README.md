@@ -11,7 +11,9 @@ The project is a user-friendly Linux assistant designed to attract new users to 
 ## Key Features
 - **System Optimization**: Clean unused files, manage updates and upgrades, enable firewall, and improve overall system performance.
 - **Customization**: Adjust terminal settings, configure the dock, tweak desktop behaviors, and apply other beginner-friendly visual enhancements.
-- **Convenience Scripts**: Provide simple scripts for common tasks, such as installing software, setting default applications, or enabling helpful system utilities.
+- **Convenience Scripts**: Provide simple scripts for common tasks, such as installing software, setting default applications, or enabling helpful
+- **Password Generator**: Allows users to generate random password, choose it's length and copy it 
+system utilities.
 - **User Guidance**: Assist new Linux users in performing actions that are typically done via the terminal, making the learning curve smoother.
 
 ## Technologies and Tools

@@ -1,9 +1,5 @@
 #include "sidebar.h"
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sidebar row
-// ─────────────────────────────────────────────────────────────────────────────
-
 static GtkWidget *make_nav_row(const char *icon_name, const char *label_text, gboolean is_active)
 {
     GtkWidget *row = gtk_list_box_row_new();
@@ -25,7 +21,7 @@ static GtkWidget *make_nav_row(const char *icon_name, const char *label_text, gb
     gtk_box_append(GTK_BOX(nav_box), icon);
     gtk_box_append(GTK_BOX(nav_box), label);
 
-    // "Active" badge under the first item
+   
     if (is_active)
     {
         GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -45,9 +41,6 @@ static GtkWidget *make_nav_row(const char *icon_name, const char *label_text, gb
     return row;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sidebar creation
-// ─────────────────────────────────────────────────────────────────────────────
 
 GtkWidget *create_sidebar(NavData *nd)
 {
@@ -66,7 +59,7 @@ GtkWidget *create_sidebar(NavData *nd)
     gtk_widget_set_margin_start(listbox, 8);
     gtk_widget_set_margin_end(listbox, 8);
 
-    // Navigation rows
+    
     gtk_list_box_append(GTK_LIST_BOX(listbox),
                         make_nav_row("preferences-system-symbolic", "System Setup", TRUE));
     gtk_list_box_append(GTK_LIST_BOX(listbox),
@@ -76,22 +69,22 @@ GtkWidget *create_sidebar(NavData *nd)
     gtk_list_box_append(GTK_LIST_BOX(listbox),
                         make_nav_row("preferences-other-symbolic", "System Tools", FALSE));
     gtk_list_box_append(GTK_LIST_BOX(listbox),
+                        make_nav_row("document-properties-symbolic", "Password Generator", FALSE));
+    gtk_list_box_append(GTK_LIST_BOX(listbox),
                         make_nav_row("help-about-symbolic", "About", FALSE));
 
     gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sidebar_scroll), listbox);
 
-    // Store listbox reference in NavData
+   
     nd->listbox = GTK_LIST_BOX(listbox);
 
-    // Wire up selection
+    
     g_signal_connect(listbox, "row-selected", G_CALLBACK(on_nav_row_selected), nd);
 
     return sidebar_scroll;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Sidebar selection → switch stack page
-// ─────────────────────────────────────────────────────────────────────────────
+
 
 void on_nav_row_selected(GtkListBox *box, GtkListBoxRow *row, gpointer user_data)
 {
