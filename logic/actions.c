@@ -38,7 +38,7 @@ const char *get_script(const char *action_id)
     }
     else if (strcmp(action_id, "change_appearance") == 0)
     {
-        script_name = "appearance/change_appearance.sh";
+        script_name = "appearance/change_appearance_dark.sh";
         prefix = "bash ";
     }
     else if (strcmp(action_id, "change_appearance_light") == 0)
