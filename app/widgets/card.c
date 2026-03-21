@@ -57,6 +57,8 @@ GtkWidget *create_card(
     GtkWidget *btn_content = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 6);
     GtkWidget *btn_icon = gtk_image_new_from_icon_name("media-playback-start-symbolic");
     GtkWidget *btn_label = gtk_label_new("Run");
+    gtk_widget_add_css_class(btn_icon, "run-btn-icon");
+    gtk_widget_add_css_class(btn_label, "run-btn-label");
     gtk_box_append(GTK_BOX(btn_content), btn_icon);
     gtk_box_append(GTK_BOX(btn_content), btn_label);
     gtk_widget_set_halign(btn_content, GTK_ALIGN_CENTER);

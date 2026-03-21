@@ -38,7 +38,42 @@ const char *get_script(const char *action_id)
     }
     else if (strcmp(action_id, "change_appearance") == 0)
     {
-        script_name = "change_appearance.sh";
+        script_name = "appearance/change_appearance.sh";
+        prefix = "bash ";
+    }
+    else if (strcmp(action_id, "change_appearance_light") == 0)
+    {
+        script_name = "appearance/change_appearance_light.sh";
+        prefix = "bash ";
+    }
+    else if (strcmp(action_id, "change_appearance_blue") == 0)
+    {
+        script_name = "appearance/change_appearance_blue.sh";
+        prefix = "bash ";
+    }
+    else if (strcmp(action_id, "change_appearance_green") == 0)
+    {
+        script_name = "appearance/change_appearance_green.sh";
+        prefix = "bash ";
+    }
+    else if (strcmp(action_id, "change_appearance_orange") == 0)
+    {
+        script_name = "appearance/change_appearance_orange.sh";
+        prefix = "bash ";
+    }
+    else if (strcmp(action_id, "change_appearance_purple") == 0)
+    {
+        script_name = "appearance/change_appearance_purple.sh";
+        prefix = "bash ";
+    }
+    else if (strcmp(action_id, "change_appearance_yellow") == 0)
+    {
+        script_name = "appearance/change_appearance_yellow.sh";
+        prefix = "bash ";
+    }
+    else if (strcmp(action_id, "reset_appearance_default") == 0)
+    {
+        script_name = "appearance/reset_appearance_default.sh";
         prefix = "bash ";
     }
     else if (strcmp(action_id, "check_sysinfo") == 0)

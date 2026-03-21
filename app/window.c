@@ -8,6 +8,43 @@
 #include "pages/page_about.h"
 #include "pages/page_firewall.h"
 
+static gboolean theme_name_is_dark(const char *theme_name)
+{
+    if (!theme_name)
+        return FALSE;
+
+    char *lower_name = g_ascii_strdown(theme_name, -1);
+    gboolean is_dark = strstr(lower_name, "dark") != NULL;
+    g_free(lower_name);
+
+    return is_dark;
+}
+
+static void update_window_theme_class(GtkWidget *window)
+{
+    GtkSettings *settings = gtk_settings_get_default();
+    char *theme_name = NULL;
+
+    if (!settings)
+        return;
+
+    g_object_get(settings, "gtk-theme-name", &theme_name, NULL);
+
+    if (theme_name_is_dark(theme_name))
+        gtk_widget_remove_css_class(window, "light-mode");
+    else
+        gtk_widget_add_css_class(window, "light-mode");
+
+    g_free(theme_name);
+}
+
+static void on_theme_name_changed(GObject *object, GParamSpec *pspec, gpointer user_data)
+{
+    (void)object;
+    (void)pspec;
+    update_window_theme_class(GTK_WIDGET(user_data));
+}
+
 static const char *APP_CSS =
     "window {"
     "    background-color: #1c1c1e;"
@@ -108,9 +145,12 @@ static const char *APP_CSS =
     "    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);"
     "    transition: transform 140ms ease, background-color 140ms ease, box-shadow 140ms ease;"
     "}"
-    ".run-btn label {"
+    ".run-btn-label {"
     "    color: #ffffff;"
     "    font-weight: 700;"
+    "}"
+    ".run-btn-icon {"
+    "    color: #ffffff;"
     "}"
     ".run-btn:hover {"
     "    background-color: #409cff;"
@@ -126,6 +166,31 @@ static const char *APP_CSS =
     "    background-color: rgba(255, 255, 255, 0.12);"
     "    color: rgba(255, 255, 255, 0.55);"
     "    box-shadow: none;"
+    "}"
+    ".reset-btn {"
+    "    background-color: rgba(255, 255, 255, 0.08);"
+    "    color: #ffffff;"
+    "    border-radius: 20px;"
+    "    border: 1px solid #3a3a3c;"
+    "    padding: 7px 18px;"
+    "    font-weight: 700;"
+    "    font-size: 0.88em;"
+    "}"
+    ".reset-btn-label {"
+    "    color: #ffffff;"
+    "    font-weight: 700;"
+    "}"
+    ".reset-btn-icon {"
+    "    color: #ffffff;"
+    "}"
+    ".reset-btn:hover {"
+    "    background-color: rgba(255, 255, 255, 0.14);"
+    "    border-color: #48484a;"
+    "}"
+    ".reset-btn:disabled {"
+    "    background-color: rgba(255, 255, 255, 0.06);"
+    "    color: rgba(255, 255, 255, 0.44);"
+    "    border-color: rgba(255, 255, 255, 0.08);"
     "}"
 
     ".about-title {"
@@ -173,6 +238,109 @@ static const char *APP_CSS =
 
     ".content-area {"
     "    background-color: #1c1c1e;"
+    "}"
+    "window.light-mode {"
+    "    background-color: #f5f6f8;"
+    "}"
+    "window.light-mode headerbar {"
+    "    background-color: #f4f5f7;"
+    "    border-bottom: 1px solid #d6dae1;"
+    "}"
+    "window.light-mode headerbar .title {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .header-subtitle {"
+    "    color: #5f6775;"
+    "}"
+    "window.light-mode .sidebar {"
+    "    background-color: #eef1f5;"
+    "    border-right: 1px solid #d6dae1;"
+    "}"
+    "window.light-mode .sidebar row:hover {"
+    "    background-color: #e7ebf1;"
+    "}"
+    "window.light-mode .sidebar row:selected .nav-row-box {"
+    "    background-color: #dbe7ff;"
+    "}"
+    "window.light-mode .sidebar row:selected .nav-label {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .sidebar row:selected .nav-icon {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .nav-label {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .nav-icon {"
+    "    color: #4b5563;"
+    "}"
+    "window.light-mode .active-badge {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .page-title {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .action-card {"
+    "    background-color: #ffffff;"
+    "    border: 1px solid #d6dae1;"
+    "    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);"
+    "}"
+    "window.light-mode .action-card:hover {"
+    "    background-color: #f8fafc;"
+    "    border-color: #c8d0dc;"
+    "}"
+    "window.light-mode .card-title {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .card-desc {"
+    "    color: #4b5563;"
+    "}"
+    "window.light-mode .run-btn {"
+    "    background-color: #dbe7ff;"
+    "    color: #16181d;"
+    "    border: 1px solid #bfd1ff;"
+    "    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.10);"
+    "}"
+    "window.light-mode .run-btn-label {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .run-btn-icon {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .run-btn:hover {"
+    "    background-color: #cfdfff;"
+    "}"
+    "window.light-mode .run-btn:disabled {"
+    "    background-color: #eef2f7;"
+    "    color: #6b7280;"
+    "    border-color: #d6dae1;"
+    "}"
+    "window.light-mode .reset-btn {"
+    "    background-color: #eef2f7;"
+    "    color: #16181d;"
+    "    border-color: #c8d0dc;"
+    "}"
+    "window.light-mode .reset-btn-label {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .reset-btn-icon {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .reset-btn:hover {"
+    "    background-color: #e5ebf3;"
+    "    border-color: #b6c1cf;"
+    "}"
+    "window.light-mode .about-title {"
+    "    color: #16181d;"
+    "}"
+    "window.light-mode .about-version {"
+    "    color: #5f6775;"
+    "}"
+    "window.light-mode .about-desc {"
+    "    color: #2f3743;"
+    "}"
+    "window.light-mode .content-area {"
+    "    background-color: #f5f6f8;"
     "}";
 
 void on_activate(GtkApplication *app, gpointer user_data)
@@ -190,6 +358,15 @@ void on_activate(GtkApplication *app, gpointer user_data)
         GTK_STYLE_PROVIDER(provider),
         GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     g_object_unref(provider);
+
+    update_window_theme_class(window);
+
+    GtkSettings *settings = gtk_settings_get_default();
+    if (settings)
+    {
+        g_signal_connect(settings, "notify::gtk-theme-name",
+                         G_CALLBACK(on_theme_name_changed), window);
+    }
 
     GtkWidget *headerbar = gtk_header_bar_new();
     gtk_window_set_titlebar(GTK_WINDOW(window), headerbar);
