@@ -2,7 +2,6 @@
 #include "actions.h"
 #include <glib.h>
 
-
 static void on_subprocess_done(GObject *src, GAsyncResult *res, gpointer user_data)
 {
     GSubprocess *proc = G_SUBPROCESS(src);
@@ -13,9 +12,13 @@ static void on_subprocess_done(GObject *src, GAsyncResult *res, gpointer user_da
 
     gboolean ok = g_subprocess_communicate_utf8_finish(proc, res, &out, &errbuf, &err);
 
-    gtk_widget_set_sensitive(ctx->run_btn, TRUE);
-    gtk_spinner_stop(GTK_SPINNER(ctx->spinner));
-    gtk_widget_set_visible(ctx->spinner, FALSE);
+    if (ctx->run_btn)
+        gtk_widget_set_sensitive(ctx->run_btn, TRUE);
+    if (ctx->spinner)
+    {
+        gtk_spinner_stop(GTK_SPINNER(ctx->spinner));
+        gtk_widget_set_visible(ctx->spinner, FALSE);
+    }
 
     GtkWidget *dialog;
 
@@ -75,9 +78,13 @@ static void launch_script(ActionContext *ctx)
     if (!cmd)
     {
         g_warning("No script mapped for: %s", ctx->action_id);
-        gtk_widget_set_sensitive(ctx->run_btn, TRUE);
-        gtk_spinner_stop(GTK_SPINNER(ctx->spinner));
-        gtk_widget_set_visible(ctx->spinner, FALSE);
+        if (ctx->run_btn)
+            gtk_widget_set_sensitive(ctx->run_btn, TRUE);
+        if (ctx->spinner)
+        {
+            gtk_spinner_stop(GTK_SPINNER(ctx->spinner));
+            gtk_widget_set_visible(ctx->spinner, FALSE);
+        }
         g_free(ctx);
         return;
     }
@@ -106,16 +113,19 @@ static void launch_script(ActionContext *ctx)
         gtk_window_present(GTK_WINDOW(dialog));
         g_signal_connect(dialog, "response", G_CALLBACK(gtk_window_destroy), NULL);
         g_error_free(err);
-        gtk_widget_set_sensitive(ctx->run_btn, TRUE);
-        gtk_spinner_stop(GTK_SPINNER(ctx->spinner));
-        gtk_widget_set_visible(ctx->spinner, FALSE);
+        if (ctx->run_btn)
+            gtk_widget_set_sensitive(ctx->run_btn, TRUE);
+        if (ctx->spinner)
+        {
+            gtk_spinner_stop(GTK_SPINNER(ctx->spinner));
+            gtk_widget_set_visible(ctx->spinner, FALSE);
+        }
         g_free(ctx);
         return;
     }
 
     g_subprocess_communicate_utf8_async(proc, NULL, NULL, on_subprocess_done, ctx);
 }
-
 
 void on_run_clicked(GtkButton *btn, gpointer user_data)
 {
@@ -130,4 +140,15 @@ void on_run_clicked(GtkButton *btn, gpointer user_data)
     *run_ctx = *template_ctx;
 
     launch_script(run_ctx);
+}
+
+void run_action_async(const char *action_id, GtkWindow *parent_window)
+{
+    if (!action_id)
+        return;
+
+    ActionContext *ctx = g_new0(ActionContext, 1);
+    ctx->action_id = action_id;
+    ctx->parent_window = parent_window;
+    launch_script(ctx);
 }

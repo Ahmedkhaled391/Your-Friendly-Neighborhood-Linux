@@ -12,5 +12,6 @@ typedef struct
 } ActionContext;
 
 void on_run_clicked(GtkButton *btn, gpointer user_data);
+void run_action_async(const char *action_id, GtkWindow *parent_window);
 
-#endif 
+#endif

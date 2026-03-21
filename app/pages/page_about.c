@@ -4,6 +4,7 @@
 GtkWidget *create_page_about(void)
 {
     GtkWidget *page = make_page();
+    page_add_title(page, "About Your Friendly Neighborhood Linux");
     {
         GtkWidget *vbox = GTK_WIDGET(g_object_get_data(G_OBJECT(page), "vbox"));
         gtk_widget_set_valign(vbox, GTK_ALIGN_CENTER);

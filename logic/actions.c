@@ -56,6 +56,16 @@ const char *get_script(const char *action_id)
         script_name = "install_multimedia.sh";
         prefix = "pkexec bash ";
     }
+    else if (strcmp(action_id, "enable_firewall") == 0)
+    {
+        script_name = "enable_firewall.sh";
+        prefix = "pkexec bash ";
+    }
+    else if (strcmp(action_id, "disable_firewall") == 0)
+    {
+        script_name = "disable_firewall.sh";
+        prefix = "pkexec bash ";
+    }
     else
     {
         return NULL;

@@ -6,7 +6,7 @@
 #include "pages/page_tools.h"
 #include "pages/page_generator.h"
 #include "pages/page_about.h"
-
+#include "pages/page_firewall.h"
 
 static const char *APP_CSS =
     "window {"
@@ -142,6 +142,28 @@ static const char *APP_CSS =
     "    color: #ebebf5;"
     "}"
 
+    "switch.firewall-switch {"
+    "    min-width: 52px;"
+    "    min-height: 30px;"
+    "    padding: 3px;"
+    "    border-radius: 15px;"
+    "    background-color: #24262d;"
+    "    border: 1px solid #3a3f49;"
+    "    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);"
+    "}"
+    "switch.firewall-switch:checked {"
+    "    background-color: #1f84ff;"
+    "    border-color: #2f8fff;"
+    "}"
+    "switch.firewall-switch slider {"
+    "    min-width: 24px;"
+    "    min-height: 24px;"
+    "    border-radius: 12px;"
+    "    background-color: #2b3038;"
+    "    border: 1px solid #0f1218;"
+    "    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);"
+    "}"
+
     "scrolledwindow {"
     "    background-color: transparent;"
     "}"
@@ -153,17 +175,14 @@ static const char *APP_CSS =
     "    background-color: #1c1c1e;"
     "}";
 
-
-
 void on_activate(GtkApplication *app, gpointer user_data)
 {
-   
+
     GtkWidget *window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(window), "Your Friendly Neighborhood Linux");
     gtk_window_set_default_size(GTK_WINDOW(window), 860, 540);
     gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
-  
     GtkCssProvider *provider = gtk_css_provider_new();
     gtk_css_provider_load_from_string(provider, APP_CSS);
     gtk_style_context_add_provider_for_display(
@@ -191,7 +210,6 @@ void on_activate(GtkApplication *app, gpointer user_data)
     GtkWidget *root = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_window_set_child(GTK_WINDOW(window), root);
 
-    
     GtkWidget *stack = gtk_stack_new();
     gtk_stack_set_transition_type(GTK_STACK(stack), GTK_STACK_TRANSITION_TYPE_CROSSFADE);
     gtk_stack_set_transition_duration(GTK_STACK(stack), 150);
@@ -206,12 +224,12 @@ void on_activate(GtkApplication *app, gpointer user_data)
     nd->pages[2] = "custom";
     nd->pages[3] = "tools";
     nd->pages[4] = "generator";
-    nd->pages[5] = "about";
+    nd->pages[5] = "firewall";
+    nd->pages[6] = "about";
 
     GtkWidget *sidebar = create_sidebar(nd);
     gtk_box_append(GTK_BOX(root), sidebar);
 
-  
     GtkWidget *sep = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
     gtk_box_append(GTK_BOX(root), sep);
 
@@ -219,12 +237,12 @@ void on_activate(GtkApplication *app, gpointer user_data)
 
     GtkWindow *win = GTK_WINDOW(window);
 
-    
     gtk_stack_add_named(GTK_STACK(stack), create_page_setup(win), "setup");
     gtk_stack_add_named(GTK_STACK(stack), create_page_perf(win), "perf");
     gtk_stack_add_named(GTK_STACK(stack), create_page_custom(win), "custom");
     gtk_stack_add_named(GTK_STACK(stack), create_page_generator(win), "generator");
     gtk_stack_add_named(GTK_STACK(stack), create_page_tools(win), "tools");
+    gtk_stack_add_named(GTK_STACK(stack), create_page_firewall(win), "firewall");
     gtk_stack_add_named(GTK_STACK(stack), create_page_about(), "about");
 
     // Free NavData when window is destroyed

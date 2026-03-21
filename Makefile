@@ -17,6 +17,7 @@ SOURCES = \
     app/pages/page_tools.c \
     app/pages/page_generator.c \
     app/pages/page_about.c \
+    app/pages/page_firewall.c \
     app/widgets/card.c \
     logic/actions.c \
     logic/runner.c \
