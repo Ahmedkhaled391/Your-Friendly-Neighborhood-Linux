@@ -10,6 +10,14 @@ static gboolean firewall_output_is_active(const char *output)
     return g_strstr_len(output, -1, "Status: active") != NULL;
 }
 
+static void sync_firewall_switch(GtkSwitch *switcher, gboolean active)
+{
+    g_object_set_data(G_OBJECT(switcher), "syncing-firewall-state", GINT_TO_POINTER(1));
+    gtk_switch_set_state(switcher, active);
+    gtk_switch_set_active(switcher, active);
+    g_object_set_data(G_OBJECT(switcher), "syncing-firewall-state", NULL);
+}
+
 static void on_firewall_status_loaded(GObject *src, GAsyncResult *res, gpointer user_data)
 {
     GSubprocess *proc = G_SUBPROCESS(src);
@@ -22,9 +30,7 @@ static void on_firewall_status_loaded(GObject *src, GAsyncResult *res, gpointer 
 
     if (ok && !err)
     {
-        g_object_set_data(G_OBJECT(switcher), "syncing-firewall-state", GINT_TO_POINTER(1));
-        gtk_switch_set_active(switcher, firewall_output_is_active(out));
-        g_object_set_data(G_OBJECT(switcher), "syncing-firewall-state", NULL);
+        sync_firewall_switch(switcher, firewall_output_is_active(out));
     }
 
     gtk_widget_set_sensitive(GTK_WIDGET(switcher), TRUE);
@@ -70,22 +76,55 @@ static void load_firewall_status(GtkSwitch *switcher)
         g_object_ref(switcher));
 }
 
+static void on_firewall_toggle_action_done(
+    const char *action_id,
+    gboolean success,
+    int exit_code,
+    const char *out,
+    const char *errbuf,
+    gpointer user_data)
+{
+    (void)action_id;
+    (void)success;
+    (void)exit_code;
+    (void)out;
+    (void)errbuf;
+
+    load_firewall_status(GTK_SWITCH(user_data));
+}
+
 static gboolean on_firewall_switch_state_set(GtkSwitch *sw, gboolean state, gpointer user_data)
 {
     if (g_object_get_data(G_OBJECT(sw), "syncing-firewall-state") != NULL)
         return FALSE;
 
-    (void)sw;
     GtkWindow *parent = GTK_WINDOW(user_data);
+
+    // Keep position/color unchanged until command is validated and status is reloaded.
+    sync_firewall_switch(sw, gtk_switch_get_active(sw));
+    gtk_widget_set_sensitive(GTK_WIDGET(sw), FALSE);
+
     if (state)
     {
-        run_action_async("enable_firewall", parent);
+        run_action_async_with_callback(
+            "enable_firewall",
+            parent,
+            on_firewall_toggle_action_done,
+            g_object_ref(sw),
+            g_object_unref);
     }
     else
     {
-        run_action_async("disable_firewall", parent);
+        run_action_async_with_callback(
+            "disable_firewall",
+            parent,
+            on_firewall_toggle_action_done,
+            g_object_ref(sw),
+            g_object_unref);
     }
-    return FALSE;
+
+    // Block the default immediate switch flip; status will refresh after action.
+    return TRUE;
 }
 
 GtkWidget *create_page_firewall(GtkWindow *parent)
@@ -99,7 +138,7 @@ GtkWidget *create_page_firewall(GtkWindow *parent)
 
     GtkWidget *switcher = gtk_switch_new();
     gtk_widget_set_tooltip_text(switcher, "Enable or disable firewall");
-    gtk_switch_set_active(GTK_SWITCH(switcher), FALSE);
+    sync_firewall_switch(GTK_SWITCH(switcher), FALSE);
     gtk_widget_set_valign(switcher, GTK_ALIGN_CENTER);
     gtk_widget_add_css_class(switcher, "firewall-switch");
 

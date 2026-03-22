@@ -18,7 +18,7 @@ The broader goal is not only convenience, but also confidence. By turning freque
 
 - **System Optimization**: Clean unused files, manage updates and upgrades, and improve overall system performance.
 - **Firewall Management**: Enable or disable the firewall through simple guided actions instead of manual terminal commands.
-- **Backup Tools**: Support routine backup tasks to help users protect important data with less manual setup.
+- **Backup Tools**: Support routine backup tasks to help users protect important data Automatically.
 - **Customization**: Adjust terminal settings, configure the dock, tweak desktop behaviors, and apply other beginner-friendly visual enhancements.
 - **Convenience Scripts**: Provide simple scripts for common tasks, such as installing software, enabling helpful system utilities, and handling routine maintenance.
 - **Password Generator**: Allows users to generate random passwords, choose their length, and copy them easily.

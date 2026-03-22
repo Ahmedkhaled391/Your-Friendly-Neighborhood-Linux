@@ -94,6 +94,20 @@ headerbar .title {
     background-color: rgba(82, 92, 117, 0.42);
     border-color: rgba(255, 255, 255, 0.16);
 }
+.action-card-current {
+    background-color: rgba(79, 140, 255, 0.2);
+    border-color: rgba(79, 140, 255, 0.6);
+}
+.action-card-current:hover {
+    background-color: rgba(79, 140, 255, 0.24);
+    border-color: rgba(79, 140, 255, 0.72);
+}
+.action-card-current .card-title {
+    color: #ffffff;
+}
+.action-card-current .card-desc {
+    color: rgba(230, 232, 239, 0.9);
+}
 .card-title {
     font-size: 0.95em;
     font-weight: 600;
@@ -130,6 +144,14 @@ headerbar .title {
     background-color: rgba(255, 255, 255, 0.08);
     color: rgba(255, 255, 255, 0.44);
     box-shadow: none;
+}
+.current-btn,
+.current-btn:disabled {
+    background-color: rgba(79, 140, 255, 0.95);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+    opacity: 1;
 }
 
 .reset-btn {

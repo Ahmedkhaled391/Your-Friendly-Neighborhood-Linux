@@ -9,4 +9,11 @@ GtkWidget *create_card(
     const char *action_id,
     GtkWindow *parent);
 
-#endif // CARD_H
+GtkWidget *create_card_with_state(
+    const char *title,
+    const char *desc,
+    const char *action_id,
+    GtkWindow *parent,
+    gboolean is_current);
+
+#endif
