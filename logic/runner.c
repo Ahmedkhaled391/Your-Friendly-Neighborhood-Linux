@@ -92,7 +92,7 @@ static void launch_script(ActionContext *ctx)
     GError *err = NULL;
     const char *argv[] = {"/bin/sh", "-c", cmd, NULL};
 
-    // Pass D-Bus session to the subprocess so gsettings works
+    // pass D-Bus session to the subprocess so gsettings works
     const gchar *dbus = g_getenv("DBUS_SESSION_BUS_ADDRESS");
     GSubprocessLauncher *launcher = g_subprocess_launcher_new(
         G_SUBPROCESS_FLAGS_STDOUT_PIPE | G_SUBPROCESS_FLAGS_STDERR_PIPE);
@@ -135,7 +135,7 @@ void on_run_clicked(GtkButton *btn, gpointer user_data)
     gtk_widget_set_visible(template_ctx->spinner, TRUE);
     gtk_spinner_start(GTK_SPINNER(template_ctx->spinner));
 
-    // Heap-allocate a fresh context for this async run
+   
     ActionContext *run_ctx = g_new(ActionContext, 1);
     *run_ctx = *template_ctx;
 

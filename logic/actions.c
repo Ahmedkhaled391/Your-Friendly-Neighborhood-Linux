@@ -101,6 +101,29 @@ const char *get_script(const char *action_id)
         script_name = "disable_firewall.sh";
         prefix = "pkexec bash ";
     }
+    else if (strcmp(action_id, "backup_run") == 0)
+    {
+        script_name = "monthly_backup.sh"
+                      " run";
+        prefix = "bash ";
+        snprintf(script_path, sizeof(script_path), "%s\"%s/scripts/monthly_backup.sh\" run", prefix, base_path);
+        return script_path;
+    }
+    else if (strcmp(action_id, "backup_install_auto") == 0)
+    {
+        snprintf(script_path, sizeof(script_path), "bash \"%s/scripts/monthly_backup.sh\" install-auto", base_path);
+        return script_path;
+    }
+    else if (strcmp(action_id, "backup_remove_auto") == 0)
+    {
+        snprintf(script_path, sizeof(script_path), "bash \"%s/scripts/monthly_backup.sh\" remove-auto", base_path);
+        return script_path;
+    }
+    else if (strcmp(action_id, "install_cron") == 0)
+    {
+        snprintf(script_path, sizeof(script_path), "pkexec bash \"%s/scripts/install_cron.sh\"", base_path);
+        return script_path;
+    }
     else
     {
         return NULL;

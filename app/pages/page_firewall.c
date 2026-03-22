@@ -128,7 +128,7 @@ GtkWidget *create_page_firewall(GtkWindow *parent)
     gtk_widget_set_halign(title, GTK_ALIGN_START);
     gtk_widget_add_css_class(title, "card-title");
 
-    GtkWidget *desc = gtk_label_new("Turn UFW on or off. Current state is loaded from system configuration.");
+    GtkWidget *desc = gtk_label_new("Turn Firewall on or off.");
     gtk_widget_set_halign(desc, GTK_ALIGN_START);
     gtk_label_set_wrap(GTK_LABEL(desc), TRUE);
     gtk_label_set_max_width_chars(GTK_LABEL(desc), 55);
